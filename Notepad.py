@@ -1,5 +1,8 @@
-import os
+# import os
+import datetime
+import tkinter.messagebox
 from tkinter import * # Tk GUI 툴킷에 대한 파이썬 바인딩
+from tkinter import filedialog
 
 root = Tk()
 root.title("Notepad 타이틀명")
@@ -8,17 +11,35 @@ root.geometry("640x480")
 # root.resizable(False, False) # x(너비)y(높이)값 변경 불가
 
 # 열기, 저장 파일 이름
-filename="test.txt"
+date = datetime.date.today()
+filename = str(date) + ".txt"
 
 def open_file() :
-    if os.path.isfile(filename) : # 파일 존재 여부 확인
-        with open(filename, "r", encoding="utf-8") as file :
-            txt.delete("1.0", END) # 기존에 열려 있는 내용 삭제
-            txt.insert(END, file.read()) # filename에 저장된 내용 읽어오기
+    # 파일 대화 상자를 열어 파일 선택
+    selected_file = filedialog.askopenfilename(
+        title="파일 선택",
+        filetypes=(("텍스트 파일", "*.txt"), ("모든 파일", "*.*"))
+    )
+
+    # 사용자가 파일을 선택했는지 확인
+    if selected_file:
+        with open(selected_file, "r", encoding="utf-8") as file:
+            txt.delete("1.0", END)  # 기존에 열려 있는 내용 삭제
+            txt.insert(END, file.read())  # 선택된 파일 내용 읽어오기
+
+    # if os.path.isfile(filename) : # 파일 존재 여부 확인
+    #     with open(filename, "r", encoding="utf-8") as file :
+    #         txt.delete("1.0", END) # 기존에 열려 있는 내용 삭제
+    #         txt.insert(END, file.read()) # filename에 저장된 내용 읽어오기
 
 def save_file() :
-    with open(filename, "w", encoding="utf-8") as file :
-        file.write(txt.get("1.0", END)) # 모든 내용을 가져와서 저장
+    file = open(filename, "w")
+    ts = txt.get("1.0", END)
+    file.write(ts)
+    file.close()
+    tkinter.messagebox.showinfo("알림", "정상적으로 저장되었습니다.")
+    # with open(filename, "w", encoding="utf-8") as file :
+    #     file.write(txt.get("1.0", END)) # 모든 내용을 가져와서 저장
 
 
 
